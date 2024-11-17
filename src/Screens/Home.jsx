@@ -249,10 +249,10 @@ export default function Home() {
 
       {/* FAB to navigate to added contacts */}
       <TouchableOpacity
-        style={tw`absolute bottom-5 right-5 bg-blue-500 p-4 rounded-full`}
+        style={tw`absolute bottom-5 right-5 bg-lime-500 p-4 rounded-full`}
         onPress={() => navigation.navigate('AddedContacts')} // Navigate to AddedContacts screen
       >
-        <Text style={tw`text-white`}>See List</Text>
+        <Text style={tw`text-white font-semibold`}>See List</Text>
       </TouchableOpacity>
     </View>
   );
