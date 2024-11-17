@@ -16,23 +16,31 @@ export default function Home({navigation}) {
   const [contacts, setContacts] = useState([]);
   const [filteredContacts, setFilteredContacts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-
-  // React.useEffect(() => {
-  //   const subscription = RNShake.addListener(() => {
-  //     // Your code here...
-  //     console.log('in sub');
-  //   });
-
-  //   return () => {
-  //     // Your code here...
-  //     console.log('in remove');
-  //     subscription.remove();
-  //   };
-  // }, []);
+  const [isMaually, setIsManually] = useState(false);
+  const [addContact, setAddContact] = useState({
+    name: '',
+    phone: '',
+  });
 
   useEffect(() => {
     getContacts();
   }, []);
+
+  useEffect(() => {
+    console.log(addContact);
+  }, [addContact]);
+
+  const handleManually = () => {
+    setIsManually(!isMaually);
+  };
+
+  const handleNameChange = e => {
+    setAddContact(prev => ({...prev, name: e}));
+  };
+
+  const handlePhoneChange = e => {
+    setAddContact(prev => ({...prev, phone: e}));
+  };
 
   const getContacts = async () => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
@@ -114,28 +122,51 @@ export default function Home({navigation}) {
         <Button
           classname={'bg-transparent border border-gray-400'}
           textClass={'text-gray-400'}
-          text={'Add Contacts Manually'}
-          onPress={e => console.log('clicked')}
+          text={`Add Contacts ${!isMaually ? 'Manually' : 'From List'}`}
+          onPress={e => handleManually()}
         />
       </View>
 
       {/* Search Input */}
-      <View style={tw`p-4 bg-gray-100`}>
-        <TextInput
-          style={tw`bg-white p-3 rounded-lg border border-gray-300`}
-          placeholder="Search contacts..."
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-      </View>
 
       {/* Contact List */}
-      <FlatList
-        data={filteredContacts}
-        keyExtractor={item => item.phoneNumbers[0]?.number || item.recordID}
-        renderItem={renderContact}
-        contentContainerStyle={tw`flex-grow`}
-      />
+      {isMaually ? (
+        <View style={tw`flex flex-col gap-2 items-center justify-center p-10`}>
+          <TextInput
+            onChangeText={e => handleNameChange(e)}
+            value={addContact.name}
+            placeholder="Name"
+            keyboardType="default"
+            style={tw`border border-gray-400 w-full p-3 rounded-lg`}
+          />
+          <TextInput
+            onChangeText={e => handlePhoneChange(e)}
+            value={addContact.phone}
+            placeholder="Number"
+            keyboardType="phone-pad"
+            maxLength={10}
+            style={tw`border border-gray-400 w-full p-3 rounded-lg`}
+          />
+          <Button text={'Add'} />
+        </View>
+      ) : (
+        <>
+          <View style={tw`p-4 bg-gray-100`}>
+            <TextInput
+              style={tw`bg-white p-3 rounded-lg border border-gray-300`}
+              placeholder="Search contacts..."
+              value={searchQuery}
+              onChangeText={handleSearch}
+            />
+          </View>
+          <FlatList
+            data={filteredContacts}
+            keyExtractor={item => item.phoneNumbers[0]?.number || item.recordID}
+            renderItem={renderContact}
+            contentContainerStyle={tw`flex-grow`}
+          />
+        </>
+      )}
     </View>
   );
 }
