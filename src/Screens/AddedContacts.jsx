@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import tw from 'twrnc';
-import {Ionicons} from '@expo/vector-icons'; // Import Ionicons for trash icon
 import {removeContactFromAdded} from '../Store/contactsActions'; // Import the remove action
 
 export default function AddedContacts() {
